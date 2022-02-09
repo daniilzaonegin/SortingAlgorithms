@@ -1,0 +1,12 @@
+﻿.array {
+    border: 1px solid black;
+}
+
+.col {
+    border: 1px solid black;
+}
+
+.col.highlight {
+    color: lightgreen;
+    font-weight: 500;
+}

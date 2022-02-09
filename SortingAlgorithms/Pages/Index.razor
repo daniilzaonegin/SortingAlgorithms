@@ -1,0 +1,118 @@
+﻿@page "/"
+
+<h3>Bubble Sort</h3>
+
+<div class="row ms-0">
+    @for (int i = 0; i < @_array.Length; i++)
+    {
+        <div class="col @(highlight[i] ? "highlight": "")">@_array[i]</div>
+    }
+</div>
+
+<div class="d-inline-flex mt-2">
+    <button class="btn btn-sm btn-primary me-2" @onclick="BubbleSortAsync">Bubble Sort</button>
+    <button class="btn btn-sm btn-primary me-2" @onclick="InsertionSortAsync">Insertion Sort</button>
+    <button class="btn btn-sm btn-secondary" @onclick="GenerateValues">GenerateValues</button>
+</div>
+<p class="@(!SortCompleted ? "d-none" : "mt-2")">Sort is complete!</p>
+@code {
+    private const int ArrayLength = 8;
+    private int[] _array = new int[ArrayLength];
+
+    private bool[] highlight = new bool[8];
+
+    public bool SortCompleted { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        GenerateValues();
+    }
+
+    private void GenerateValues()
+    {
+        for (int i = 0; i < ArrayLength; i++)
+        {
+            _array[i] = Random.Shared.Next(100);
+        }
+    }
+
+    private async Task BubbleSortAsync()
+    {
+        if (SortCompleted)
+        {
+            SortCompleted = false;
+            StateHasChanged();
+        }
+        while (true)
+        {
+            int swaps = 0;
+            for (var i = 0; i < _array.Length - 1; i++)
+            {
+                if (_array[i] > _array[i + 1])
+                {
+                    int temp = _array[i + 1];
+                    _array[i + 1] = _array[i];
+                    _array[i] = temp;
+                    swaps++;
+                    highlight = new bool[8];
+                    highlight[i] = true;
+                    highlight[i + 1] = true;
+                    StateHasChanged();
+                    await Task.Delay(500);
+                }
+            }
+
+            await Task.Delay(1000);
+            if (swaps == 0)
+                break;
+        }
+        highlight = new bool[8];
+        SortCompleted = true;
+    }
+
+    private async Task InsertionSortAsync()
+    {
+        if (SortCompleted)
+        {
+            SortCompleted = false;
+        }
+        //my
+        //for (int i = 1; i < _array.Length; i++)
+        //{
+        //    for (var j = 0; j < i; j++)
+        //    {
+        //        if (_array[i] < _array[j])
+        //        {
+        //            int temp = _array[i];
+        //            _array[i] = _array[j];
+        //            _array[j] = temp;
+        //        }
+        //    }
+        //}
+
+        for (int i = 1; i < _array.Length; i++)
+        {
+            int key = _array[i];
+            int j = i - 1;
+
+            while (j >= 0 && _array[j] > key)
+            {
+                _array[j + 1] = _array[j];
+                highlight[j + 1] = true;
+                StateHasChanged();
+                await Task.Delay(500);
+                highlight[j + 1] = false;
+                j = j - 1;
+            }
+            _array[j + 1] = key;
+            highlight[j + 1] = true;
+            StateHasChanged();
+            await Task.Delay(1000);
+            highlight[j + 1] = false;
+        }
+        
+        highlight = new bool[8];
+        StateHasChanged();
+        SortCompleted = true;
+    }
+}
