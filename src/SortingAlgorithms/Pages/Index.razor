@@ -1,6 +1,12 @@
 ﻿@page "/"
 
-<h3>Bubble Sort</h3>
+<h3>Permutations Sorting Algorithms</h3>
+
+<div class="d-inline-flex mb-2">
+    <button class="btn btn-sm btn-primary me-2" @onclick="SortingAlgorithmsAsync">Bubble Sort</button>
+    <button class="btn btn-sm btn-primary me-2" @onclick="InsertionSortAsync">Insertion Sort</button>
+    <button class="btn btn-sm btn-secondary" @onclick="GenerateValues">GenerateValues</button>
+</div>
 
 <div class="row ms-0">
     @for (int i = 0; i < @_array.Length; i++)
@@ -9,11 +15,6 @@
     }
 </div>
 
-<div class="d-inline-flex mt-2">
-    <button class="btn btn-sm btn-primary me-2" @onclick="BubbleSortAsync">Bubble Sort</button>
-    <button class="btn btn-sm btn-primary me-2" @onclick="InsertionSortAsync">Insertion Sort</button>
-    <button class="btn btn-sm btn-secondary" @onclick="GenerateValues">GenerateValues</button>
-</div>
 <p class="@(!SortCompleted ? "d-none" : "mt-2")">Sort is complete!</p>
 @code {
     private const int ArrayLength = 8;
@@ -36,7 +37,7 @@
         }
     }
 
-    private async Task BubbleSortAsync()
+    private async Task SortingAlgorithmsAsync()
     {
         if (SortCompleted)
         {
@@ -76,19 +77,6 @@
         {
             SortCompleted = false;
         }
-        //my
-        //for (int i = 1; i < _array.Length; i++)
-        //{
-        //    for (var j = 0; j < i; j++)
-        //    {
-        //        if (_array[i] < _array[j])
-        //        {
-        //            int temp = _array[i];
-        //            _array[i] = _array[j];
-        //            _array[j] = temp;
-        //        }
-        //    }
-        //}
 
         for (int i = 1; i < _array.Length; i++)
         {

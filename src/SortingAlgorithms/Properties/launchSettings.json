@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "BubbleSort": {
+    "SoringAlgorithms": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

@@ -1,0 +1,146 @@
+﻿@page "/merge-sort"
+
+<h3>MergeSort</h3>
+
+<div class="d-inline-flex">
+    <button class="btn btn-sm btn-primary me-2" @onclick=SortClick disabled="@SortDisabled">MergeSort</button>
+    <button class="btn btn-sm btn-primary" @onclick=Reset>Reset</button>
+</div>
+
+@for (int j = 0; j < _levels.Count; j++)
+{
+    <div class="row mt-4">
+        @for (int k = 0; k < _levels[j].Count; k++)
+        {
+            <div class="col ms-0 me-2 row">
+                @for (int i = 0; i < @_levels[j][k].Length; i++)
+                {
+                    <div class="col">@_levels[j][k][i]</div>
+                }
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private const int arrayLength = 8;
+    private int _lastDivisionLevel = 0;
+    private int[] _array = new int[arrayLength];
+    private bool SortDisabled = false;
+    private List<List<int[]>> _levels = new List<List<int[]>>();
+
+    protected override void OnInitialized()
+    {
+        GenerateValues();
+    }
+
+    private void GenerateValues()
+    {
+        for (int i = 0; i < arrayLength; i++)
+        {
+            _array[i] = Random.Shared.Next(100);
+        }
+        _levels.Add(new List<int[]>() { _array });
+    }
+
+    private void Reset()
+    {
+        _levels.Clear();
+        GenerateValues();
+        SortDisabled = false;
+    }
+
+    public void SortClick()
+    {
+        Sort(_array);
+        SortDisabled = true;
+    }
+
+    private int[] Sort(int[] array)
+    {
+        return MergeSortInternal(array);
+    }
+
+    private int[] MergeSortInternal(int[] array, int levelNum = 0)
+    {
+        int middle = array.Length / 2;
+        if (_levels.Count <= levelNum && levelNum != 0)
+        {
+            _levels.Add(new List<int[]> { array });
+        }
+        else if (levelNum != 0)
+        {
+            _levels[levelNum].Add(array);
+        }
+        if (middle == 0)
+        {
+            _lastDivisionLevel = levelNum;
+            return array;
+        }
+
+        int[] leftArr = MergeSortInternal(array[0..middle], levelNum + 1);
+        int[] rigthArr = MergeSortInternal(array[middle..array.Length], levelNum + 1);
+
+        int[] result = new int[array.Length];
+
+        if (leftArr[leftArr.Length - 1] < rigthArr[0])
+        {
+            for (int i = 0; i < leftArr.Length; i++)
+            {
+                result[i] = leftArr[i];
+            }
+            for (int i = leftArr.Length; i < rigthArr.Length + leftArr.Length; i++)
+            {
+                result[i] = rigthArr[i - leftArr.Length];
+            }
+        }
+        else if (rigthArr[leftArr.Length - 1] < leftArr[0])
+        {
+            for (int i = 0; i < rigthArr.Length; i++)
+            {
+                result[i] = rigthArr[i];
+            }
+            for (int i = rigthArr.Length; i < leftArr.Length + rigthArr.Length; i++)
+            {
+                result[i] = leftArr[i - rigthArr.Length];
+            }
+        }
+        else
+        {
+            int first = 0, second = 0;
+            for (int i = 0; i < rigthArr.Length + leftArr.Length; i++)
+            {
+                if (first < leftArr.Length && second < rigthArr.Length)
+                {
+                    if (leftArr[first] < rigthArr[second])
+                    {
+                        result[i] = leftArr[first];
+                        first++;
+                    }
+                    else
+                    {
+                        result[i] = rigthArr[second];
+                        second++;
+                    }
+                }
+                else if (first >= leftArr.Length)
+                {
+                    result[i] = rigthArr[second];
+                    second++;
+                }
+                else
+                {
+                    result[i] = leftArr[first];
+                    first++;
+                }
+            }
+        }
+        int resultLevel = _lastDivisionLevel + (_lastDivisionLevel - levelNum);
+        if (_levels.Count < resultLevel + 1)
+        {
+            _levels.Add(new List<int[]>());
+        }
+        _levels[resultLevel].Add(result);
+        return result;
+    }
+}
